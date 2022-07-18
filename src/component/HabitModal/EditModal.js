@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import "./habitmodal.css";
+import "../HabitModal/habitmodal.css";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { addhabit } from "../../redux/reducers/HabitSlice";
+import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const HabitModal = (props) => {
+const EditModal = (props) => {
   const dispatch = useDispatch();
   const [habitData, setHabitData] = useState({
     name: "",
@@ -13,16 +13,16 @@ const HabitModal = (props) => {
     reminder: "",
   });
   const token = localStorage.getItem("token");
-  const notify = () => toast("Some Error Occured, refresh and retry");
   const HandelFormData = (e) => {
     let name = e.target.name;
     let val = e.target.value;
     setHabitData({ ...habitData, [name]: val });
   };
-  const addHabit = async (habitData, token) => {
+  const notify = () => toast("Some Error Occured, refresh and retry");
+  const upDateHabit = async (habit, token) => {
     const res = await axios.post(
-      "/api/habits",
-      { habit: habitData },
+      `/api/habits/${props.id}`,
+      { habit },
       {
         headers: {
           authorization: token,
@@ -31,7 +31,7 @@ const HabitModal = (props) => {
     );
     if (res.status === 200) {
       dispatch(addhabit(res.data.habits));
-      props.openModal(false);
+      props.IsopenModal(false);
     } else {
       notify();
     }
@@ -47,6 +47,7 @@ const HabitModal = (props) => {
             <input
               type="text"
               placeholder="Achiver"
+              value={habitData.name || props.data.name}
               name="name"
               onChange={HandelFormData}
             />
@@ -55,7 +56,8 @@ const HabitModal = (props) => {
             <span>Goal Start</span>
             <input
               type="date"
-              placeholder="14-04-2022"
+              placeholder="14-07-2022"
+              value={habitData.date || props.data.date}
               name="date"
               onChange={HandelFormData}
             />
@@ -65,14 +67,17 @@ const HabitModal = (props) => {
             <input
               type="text"
               placeholder="You can do it"
+              value={habitData.reminder || props.data.reminder}
               name="reminder"
               onChange={HandelFormData}
             />
           </div>
 
           <div className="modal-btn-sec">
-            <button onClick={() => props.openModal(false)}>Cancel</button>
-            <button onClick={() => addHabit(habitData, token)}>Save</button>
+            <button onClick={() => props.IsopenModal(false)}>Cancel</button>
+            <button onClick={() => upDateHabit(habitData, token)}>
+              Update
+            </button>
           </div>
         </div>
       </div>
@@ -80,4 +85,4 @@ const HabitModal = (props) => {
   );
 };
 
-export { HabitModal };
+export { EditModal };

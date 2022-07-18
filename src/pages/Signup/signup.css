@@ -45,7 +45,8 @@ font-size: 1.2rem;
       outline: none;
       color: var(--secondary-color);
       font-size: 1rem;
+     
 }
-.btn{
+.btn-cont{
       width: 90%;
 }
